@@ -7,3 +7,12 @@ GUI
     - https://www.tutorialspoint.com/java/java_applet_basics.htm
 "Dragging and Dropping text onto Java Applet"
     - http://stackoverflow.com/questions/20607910/dragging-and-dropping-a-text-file-onto-java-applet
+"Converting between Swing and AWT components"
+    - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/how.html#step7
+"Swing Replacements for AWT Components"
+    - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/table.html
+"Component Specific Conversion Tips"
+    - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/tips.html#canvas
+
+
+
