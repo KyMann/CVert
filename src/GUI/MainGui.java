@@ -86,7 +86,7 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
     }
 
     public static void main(String[] args) {
-        //?I'm not certain that applets need a main?
+        //applets that keep a frame need a main?
         MainGui main = new MainGui();
         frame.setSize(SCREENSIZE); // size should be passed in with object
         frame.setTitle(TITLE);
@@ -116,10 +116,11 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
 
         //--add them to the this. - the layout?
 
-        Container containerPane = getContentPane();
-        containerPane.add(status);
-        containerPane.add(formatDropDown);
-        containerPane.add(submitButton);
+        Container contentPane = frame.getContentPane();
+        contentPane.setLayout(new FlowLayout());
+        contentPane.add(status);
+        contentPane.add(formatDropDown);
+        contentPane.add(submitButton);
 
         //--assign actions - actions should be assigned so that they can be used in multiple places
         ButtonAction buttonAction = new ButtonAction();
@@ -132,7 +133,7 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
 
     public void run() {
 
-        init(); //? Does run normally call back to init? or is that just a game thing?
+
         while(isRunning) {
             //tick();
             //render();

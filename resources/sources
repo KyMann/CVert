@@ -13,6 +13,7 @@ GUI
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/table.html
 "Component Specific Conversion Tips"
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/tips.html#canvas
-
+"Using Layout Managers"
+    - http://docs.oracle.com/javase/tutorial/uiswing/layout/using.html
 
 
