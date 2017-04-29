@@ -6,13 +6,13 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -24,13 +24,13 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
 
     //--internal variables
     private  static final long serialVersionUID = 1L;
-    public static final Dimension SCREENSIZE = new Dimension(800, 600);
+    private static final Dimension SCREENSIZE = new Dimension(500, 400);
     //#this object just keeps the window height
-    public static final Dimension FRAMESIZE = new Dimension(400,300);
+    private static final Dimension FRAMESIZE = new Dimension(400,300);
     //#this is for games - makes game 1/2 the size - smooths out movment
-    public static JFrame frame;
+    private static JFrame frame;
     public static boolean isRunning = true; //to start the loop
-    public static final String TITLE = "CVert";
+    private static final String TITLE = "CVert";
 
 
     //--component variables
@@ -77,17 +77,81 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         };
 
         //-------
-        setPreferredSize(SCREENSIZE); //#here we add size to object
+        //setPreferredSize(SCREENSIZE); //#here we add size to object
         frame = new JFrame();
         this.dragAndDrop = new JTextArea();
         this.dragAndDrop.setEditable(false);
+        dragAndDrop.setSize(FRAMESIZE);
         add(dragAndDrop);
         this.dragAndDrop.setTransferHandler(tf);
     }
 
+    //#These are all methods for dropTargetListener()
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) {
+        System.out.println("Drag Enter");
+    }
+
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) {
+        System.out.println("Drag Over");
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+        System.out.println("Drop action changed");
+    }
+
+    @Override
+    public void dragExit(DropTargetEvent dtde) {
+        System.out.println("Drag Exit");
+    }
+
+    @Override
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            System.out.println("in drop");
+            Transferable tr = dtde.getTransferable();
+
+            DataFlavor[] flavors = tr.getTransferDataFlavors();
+            System.out.println(flavors.length);
+            for (int i=0; i < flavors.length; i++) {
+                if (flavors[i].isFlavorJavaFileListType()) {
+                    System.out.println("In if");
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                    ArrayList list = (ArrayList) tr.getTransferData(flavors[i]);
+                    for (int j=0; j < list.size(); j++) {
+                        dragAndDrop.append(list.get(j) + "\n");
+                    }
+                    dtde.dropComplete(true);
+                    return;
+                }
+                else if (flavors[i].isFlavorSerializedObjectType()) {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                    Object o = tr.getTransferData(flavors[i]);
+                    dragAndDrop.append("Object:" + o.getClass());
+                    dtde.dropComplete(true);
+                    return;
+                }
+                else if (flavors[i].isRepresentationClassInputStream()) {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                    dragAndDrop.read(new InputStreamReader((InputStream) tr.getTransferData(flavors[i])), "from system clipboard");
+                    dtde.dropComplete(true);
+                    return;
+                }
+            }
+            dtde.rejectDrop();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            dtde.rejectDrop();
+        }
+    }
+    //#end of drop target listener
     public static void main(String[] args) {
         //applets that keep a frame need a main?
         MainGui main = new MainGui();
+        main.setPreferredSize(SCREENSIZE);//?this is the one that is seting the drop window to the same size as the frame, and without it they both disappear...
         frame.setSize(SCREENSIZE); // size should be passed in with object
         frame.setTitle(TITLE);
         frame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
@@ -147,28 +211,5 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         isRunning = false;
     }
 
-    @Override
-    public void dragEnter(DropTargetDragEvent dtde) {
 
-    }
-
-    @Override
-    public void dragOver(DropTargetDragEvent dtde) {
-
-    }
-
-    @Override
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-
-    }
-
-    @Override
-    public void dragExit(DropTargetEvent dte) {
-
-    }
-
-    @Override
-    public void drop(DropTargetDropEvent dtde) {
-
-    }
 }
