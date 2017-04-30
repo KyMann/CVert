@@ -17,3 +17,7 @@ GUI
     - http://docs.oracle.com/javase/tutorial/uiswing/layout/using.html
 
 
+http://stackoverflow.com/questions/12573312/drag-and-drop-in-jlist-is-not-working/12574266#12574266
+http://stackoverflow.com/questions/17372678/java-droptarget-forward-transferable-to-jtable-inside
+https://docs.oracle.com/javase/7/docs/api/java/awt/dnd/DropTargetListener.html
+https://support.cs.nott.ac.uk/help/docs/java/JDK13/api/java/awt/dnd/class-use/DropTargetListener.html
