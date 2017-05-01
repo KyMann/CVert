@@ -15,7 +15,8 @@ GUI
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/tips.html#canvas
 "Using Layout Managers"
     - http://docs.oracle.com/javase/tutorial/uiswing/layout/using.html
-
+"Panels and DropTargets"
+    - http://www.java2s.com/Code/Java/Swing-JFC/PanelDropTarget.htm
 
 http://stackoverflow.com/questions/12573312/drag-and-drop-in-jlist-is-not-working/12574266#12574266
 http://stackoverflow.com/questions/17372678/java-droptarget-forward-transferable-to-jtable-inside

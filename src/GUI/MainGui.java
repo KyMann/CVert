@@ -2,13 +2,14 @@ package GUI;
 
 import GUI.actions.ButtonAction;
 
-import javax.swing.*;
+import javax.swing.*; //make sure that all components are from swing, awt components are non compatible
 
-import java.awt.*;
+import java.awt.*; //some objects, listiners, and actions can come from awt
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,17 +32,21 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
     private static JFrame frame;
     public static boolean isRunning = true; //to start the loop
     private static final String TITLE = "CVert";
-
+    private DataFlavor targetFlavor; //flavor to use for transfer - can be adjusted?
+     //TODO: expand DataFlavor into multiple types, currently image files
+    protected boolean acceptableType; //indicates when data is acceptable
 
     //--component variables
-    public JTextArea dragAndDrop;
+    private JTextArea dragAndDrop;
     private JTextArea status;
-    //public Image screen;
+    private JPanel pane = new JPanel(); //normally fed in to constructor, but I have no class to feed in from
 
 
-    //constructor
+
+    //--constructor
     public MainGui() throws HeadlessException{ //?what does headlessException do?
         super();
+        DropTarget dropTarget = new DropTarget(pane, DnDConstants.ACTION_COPY_OR_MOVE, this, true, null);
         TransferHandler tf = new TransferHandler() {
 
             @Override
@@ -76,35 +81,44 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
             }
         };
 
-        //-------
-        //setPreferredSize(SCREENSIZE); //#here we add size to object
         frame = new JFrame();
         this.dragAndDrop = new JTextArea();
         this.dragAndDrop.setEditable(false);
         dragAndDrop.setSize(FRAMESIZE);
         add(dragAndDrop);
         this.dragAndDrop.setTransferHandler(tf);
+
     }
 
-    //#These are all methods for dropTargetListener()
+    //--these are all methods for dropTargetListener()
+    //#most of these actions only run a debug line
     @Override
     public void dragEnter(DropTargetDragEvent dtde) {
-        System.out.println("Drag Enter");
-    }
+        DnDUtils.debugPrintln("dragEnter, drop action = "
+                + DnDUtils.showActions(dtde.getDropAction()));
 
-    @Override
-    public void dragOver(DropTargetDragEvent dtde) {
-        System.out.println("Drag Over");
-    }
+        checkTransferType(dtde);
 
-    @Override
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-        System.out.println("Drop action changed");
+        acceptOrRejectDrag(dtde);
     }
 
     @Override
     public void dragExit(DropTargetEvent dtde) {
-        System.out.println("Drag Exit");
+        DnDUtils.debugPrintln("DropTarget DragExit");
+    }
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) {
+        DnDUtils.debugPrintln("DropTarget dragOver, drop action = "
+                + DnDUtils.showActions(dtde.getDropAction()));
+
+        acceptOrRejectDrag(dtde);
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+        DnDUtils.debugPrintln("DropTarget drop, drop action = " + DnDUtils.showActions(dtde.getDropAction()));
+
+        acceptOrRejectDrag(dtde);
     }
 
     @Override
@@ -146,8 +160,31 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
             e.printStackTrace();
             dtde.rejectDrop();
         }
+        //this block of drop code behaves similar to the one above, but without utilizing DnDUtils - but is already capable of accepting multiple data flavors
+        if ((dtde.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0) {
+            //accept the drop and get transfer data
+            dtde.acceptDrop(dtde.getDropAction());
+            Transferable transferable = dtde.getTransferable();
+
+            try {
+                boolean result = dropComponent(transferable);
+
+                dtde.dropComplete(result);
+                DnDUtils.debugPrintln("Drop completed, success: "
+                        + result);
+            } catch (Exception e) {
+                DnDUtils.debugPrintln("Exception while handling drop "
+                        + e);
+                dtde.dropComplete(false);
+            }
+        } else {
+            DnDUtils.debugPrintln("drop target rejected drop");
+            dtde.rejectDrop();
+        }
+
     }
-    //#end of drop target listener
+
+    //--internal methods for runnable
     public static void main(String[] args) {
         //applets that keep a frame need a main?
         MainGui main = new MainGui();
@@ -169,7 +206,6 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
     public void init() {
 
         //--construct fields
-
         this.status = new JTextArea("Status", 5,40);
         this.status.setEditable(false);
         JComboBox<String> formatDropDown = new JComboBox();
@@ -178,7 +214,7 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         }
         JButton submitButton = new JButton("Convert");
 
-        //--add them to the this. - the layout?
+        //--add them to the contentPane
 
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new FlowLayout());
@@ -189,18 +225,11 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         //--assign actions - actions should be assigned so that they can be used in multiple places
         ButtonAction buttonAction = new ButtonAction();
         submitButton.addActionListener(buttonAction);
-
-
-        //screen = createVolatileImage(FRAMESIZE.width, FRAMESIZE.height); //#VolatileImage means the image only exists in RAM (as opposed to HDD)
     }
 
-
     public void run() {
-
-
         while(isRunning) {
             //tick();
-            //render();
             //#games tend to use loops, applications are more event based - with each action spawning another event
             //try {Thread.sleep(50);} //this spaces our our refresh rate, otherwise we'd refresh as quickly as possible
             //catch(InterruptedException ie) {} //nothing can interrupt it yet
@@ -209,6 +238,65 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
 
     public void stop() {
         isRunning = false;
+    }
+
+    //--methods to enable dropTargetListener file flavor verification
+    protected boolean acceptOrRejectDrag(DropTargetDragEvent dtde) {
+        int dropAction = dtde.getDropAction();
+        int sourceActions = dtde.getSourceActions();
+        boolean acceptedDrag = false;
+
+        DnDUtils.debugPrintln("\tSource actions are "
+                + DnDUtils.showActions(sourceActions)
+                + ", drop action is "
+                + DnDUtils.showActions(dropAction));
+
+        //reject if object is transfered or the operations are inacceptable
+        if(!acceptableType ||(sourceActions&DnDConstants.ACTION_COPY_OR_MOVE) ==0) {
+            DnDUtils.debugPrintln("Drop target rejecting drag");
+            dtde.rejectDrag();
+        } else if ((dropAction & DnDConstants.ACTION_COPY_OR_MOVE) == 0) {
+            //not offering copy or move - suggest a copy
+            DnDUtils.debugPrintln("Drop target ovvering COPY");
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
+            acceptedDrag = true;
+        } else {
+            //offering an acceptable operation: accept
+            DnDUtils.debugPrintln("drop target accepting drag");
+            dtde.acceptDrag(dropAction);
+            acceptedDrag = true;
+        }
+
+        return acceptedDrag;
+    }
+
+    protected void checkTransferType(DropTargetDragEvent dtde) {
+        //only accept a flavor that returns a Component
+        boolean acceptableType = false;
+        DataFlavor[] fl = dtde.getCurrentDataFlavors();
+        for (int i = 0; i < fl.length; i++) {
+            Class dataClass = fl[i].getRepresentationClass();
+
+            if (Component.class.isAssignableFrom(dataClass)) {
+                //this flavor returns a component - accept it.
+                targetFlavor = fl[i];
+                acceptableType = true;
+                break;
+            }
+        }
+        DnDUtils.debugPrintln("File type acceptable - " + acceptableType);
+    }
+
+    protected boolean dropComponent(Transferable transferable) throws IOException, UnsupportedFlavorException {
+        Object o = transferable.getTransferData(targetFlavor);
+        if (o instanceof  Component) {
+            DnDUtils.debugPrintln("Dragged component class is "
+                    + o.getClass().getName());
+            pane.add((Component) o);
+            pane.validate();
+            return true;
+        }
+        return false;
     }
 
 
