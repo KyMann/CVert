@@ -12,11 +12,14 @@ public class DropAreaAction implements ActionListener, ItemListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        //TODO: Change MainGui state with list of objects from dropAction
+        //TODO: add in status bar support
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
+        //TODO: Show objects in the square (table?)
+        //TODO: enable removal of objects
 
     }
 }

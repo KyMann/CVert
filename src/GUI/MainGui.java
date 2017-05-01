@@ -2,9 +2,9 @@ package GUI;
 
 import GUI.actions.ButtonAction;
 
-import javax.swing.*; //make sure that all components are from swing, awt components are non compatible
+import javax.swing.*; //#make sure that all components are from swing, awt components are non compatible
 
-import java.awt.*; //some objects, listiners, and actions can come from awt
+import java.awt.*; //#some objects, listiners, and actions have to come from awt
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -40,8 +40,6 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
     private JTextArea dragAndDrop;
     private JTextArea status;
     private JPanel pane = new JPanel(); //normally fed in to constructor, but I have no class to feed in from
-
-
 
     //--constructor
     public MainGui() throws HeadlessException{ //?what does headlessException do?
@@ -201,6 +199,7 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
     public void start() {
         init();
         new Thread(this).start(); //#because this implements Runnable, this runs it
+        //TODO: Learn to manage threading
     }
 
     public void init() {
@@ -210,6 +209,7 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         this.status.setEditable(false);
         JComboBox<String> formatDropDown = new JComboBox();
         for (Formats format : Formats.values()) {
+            //TODO: allow formats to change depending on file type being fed in
             formatDropDown.addItem(format.name());
         }
         JButton submitButton = new JButton("Convert");
@@ -225,15 +225,11 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         //--assign actions - actions should be assigned so that they can be used in multiple places
         ButtonAction buttonAction = new ButtonAction();
         submitButton.addActionListener(buttonAction);
+        //TODO: Add Actions to Drop Area and Format Choice Bar
     }
 
     public void run() {
-        while(isRunning) {
-            //tick();
-            //#games tend to use loops, applications are more event based - with each action spawning another event
-            //try {Thread.sleep(50);} //this spaces our our refresh rate, otherwise we'd refresh as quickly as possible
-            //catch(InterruptedException ie) {} //nothing can interrupt it yet
-        }
+        while(isRunning) {}
     }
 
     public void stop() {
@@ -298,6 +294,5 @@ public class MainGui extends JApplet implements Runnable, DropTargetListener {
         }
         return false;
     }
-
 
 }

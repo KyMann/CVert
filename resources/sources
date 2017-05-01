@@ -1,24 +1,34 @@
 GUI
-"Intro to Swing and AWT"
+*"Intro to Swing and AWT"
     by bralaborn - https://www.youtube.com/watch?v=EU-CeOeYcnQ
-"Cafe Au Lait - Components"
+*"Cafe Au Lait - Components"
     by Elliotte Harold - http://www.cafeaulait.org/course/week6/index.html
-"Java applet basics"
+*"Java applet basics"
     - https://www.tutorialspoint.com/java/java_applet_basics.htm
-"Dragging and Dropping text onto Java Applet"
+*"Dragging and Dropping text onto Java Applet"
     - http://stackoverflow.com/questions/20607910/dragging-and-dropping-a-text-file-onto-java-applet
 "Converting between Swing and AWT components"
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/how.html#step7
-"Swing Replacements for AWT Components"
+*"Swing Replacements for AWT Components"
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/table.html
 "Component Specific Conversion Tips"
     - http://www.cs.tut.fi/lintula/manual/java/tutorial/uiswing/converting/tips.html#canvas
 "Using Layout Managers"
     - http://docs.oracle.com/javase/tutorial/uiswing/layout/using.html
-"Panels and DropTargets"
+"Drop Target Listener Interface"
+    - https://docs.oracle.com/javase/7/docs/api/java/awt/dnd/DropTargetListener.html
+"Class DropTarget"
+    - https://support.cs.nott.ac.uk/help/docs/java/JDK13/api/java/awt/dnd/class-use/DropTargetListener.html
+*"DropTarget: Forward Transferable to JTable"
+    - http://stackoverflow.com/questions/17372678/java-droptarget-forward-transferable-to-jtable-inside
+"JPanel Class"
+    - https://docs.oracle.com/javase/7/docs/api/java/awt/dnd/DropTargetListener.html
+*"Panels and DropTargets"
     - http://www.java2s.com/Code/Java/Swing-JFC/PanelDropTarget.htm
 
-http://stackoverflow.com/questions/12573312/drag-and-drop-in-jlist-is-not-working/12574266#12574266
-http://stackoverflow.com/questions/17372678/java-droptarget-forward-transferable-to-jtable-inside
-https://docs.oracle.com/javase/7/docs/api/java/awt/dnd/DropTargetListener.html
-https://support.cs.nott.ac.uk/help/docs/java/JDK13/api/java/awt/dnd/class-use/DropTargetListener.html
+Actions
+
+
+
+
+

@@ -22,4 +22,6 @@ public enum Formats {
     private final int number;
 
     Formats(String name, int index) {this.format = name; this.number= index;}
+
+    //TODO: make a tree of format types? Image then video?
 }

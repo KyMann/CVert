@@ -12,11 +12,12 @@ public class FormatDropDownAction implements ActionListener, ItemListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        //TODO: alter state within MainGUI to match selected
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-
+        //TODO:  check files provided in DropArea to ensure they are compatible
+        //TODO: add in Status Bar Support
     }
 }

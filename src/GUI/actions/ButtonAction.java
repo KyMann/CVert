@@ -10,25 +10,25 @@ import java.awt.event.*;
  */
 public class ButtonAction implements ActionListener, ItemListener{
 
-    private static int count;
 
     private TextField out;
 
 
-    public ButtonAction() {count = 0;}
+    public ButtonAction() {}
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        //TODO: allow access to MainGui state - see destination format
+        //TODO: use more libraries to convert files
+        //TODO: enable status bar suport
 
-        count++;
 
         int n;
-        try{n = Integer.parseInt(ae.getActionCommand());}
-        catch(NumberFormatException e){
-
-            System.out.print(count);
-
-            n=1;}
+        try{n = Integer.parseInt(ae.getActionCommand());
+        } catch(NumberFormatException e){
+            System.out.print("Button Pressed");
+            n=1;
+        }
 
         Toolkit tk = Toolkit.getDefaultToolkit();
         for (int i=0 ; i< n; i++) {tk.beep();}
@@ -36,21 +36,6 @@ public class ButtonAction implements ActionListener, ItemListener{
     }
 
     public void itemStateChanged(ItemEvent ie) {
-        if (ie.getStateChange() == ItemEvent.SELECTED) {
-            String selectedFormat = (String) ie.getItem();
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            try {
-                for (Formats format : Formats.values()) {
-                    if (format.getNumber() == ItemEvent.SELECTED ) {
 
-                    }
-                }
-
-            }
-            catch(Exception e) {
-                tk.beep();
-            }
-        }
     }
-
 }
